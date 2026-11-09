@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "course": "accessible-lessons",
+  "title": "教师研修 · 给图表写可用的替代文本",
+  "objectives": [
+    {
+      "id": "describe-chart",
+      "title": "为课堂图表编写可让读屏用户完成任务的替代文本",
+      "level": 3,
+      "minimum_points": 10,
+      "require_rehearsal": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "guided-rewrite",
+      "title": "以温度变化图练习替代文本",
+      "phase": 1,
+      "kind": "practice",
+      "points": 0,
+      "links": [
+        {
+          "objective": "describe-chart",
+          "level": 3,
+          "points": 0,
+          "criterion": "用一句话说明变量、趋势和异常点"
+        }
+      ]
+    },
+    {
+      "id": "alt-text-review",
+      "title": "为新图表编写替代文本并与原图核对",
+      "phase": 2,
+      "kind": "assessment",
+      "points": 10,
+      "links": [
+        {
+          "objective": "describe-chart",
+          "level": 3,
+          "points": 10,
+          "criterion": "读屏用户能从文本找出趋势和最高点"
+        }
+      ]
+    }
+  ]
+}

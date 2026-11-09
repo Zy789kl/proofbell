@@ -1,0 +1,23 @@
+name: Check Proofbell
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  moon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+      - uses: hustcer/setup-moonbit@87e2bdf5cf20d3b6f5c5f266a8a513f503bb5b76
+        with:
+          version: 0.10.20+65efd5b93
+      - run: moon fmt --check
+      - run: moon check --deny-warn
+      - run: moon test --deny-warn
+      - run: moon test alignment --target wasm --deny-warn
+      - run: moon build --release
+      - run: moon run brief -- compare curricula/ai-literacy/draft.json curricula/ai-literacy/revised.json

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "course": "equipment-isolation",
+  "title": "岗位培训 · 设备隔离后的复机确认",
+  "objectives": [
+    {
+      "id": "verify-isolation",
+      "title": "按培训清单完成模拟设备的隔离状态确认",
+      "level": 3,
+      "minimum_points": 12,
+      "require_rehearsal": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "label-exercise",
+      "title": "看图识别隔离标识",
+      "phase": 1,
+      "kind": "practice",
+      "points": 0,
+      "links": [
+        {
+          "objective": "verify-isolation",
+          "level": 1,
+          "points": 0,
+          "criterion": "识别挂牌位置与颜色"
+        }
+      ]
+    },
+    {
+      "id": "simulated-check",
+      "title": "在培训装置完成状态确认并记录",
+      "phase": 2,
+      "kind": "assessment",
+      "points": 12,
+      "links": [
+        {
+          "objective": "verify-isolation",
+          "level": 3,
+          "points": 12,
+          "criterion": "按模拟清单检查状态并填写记录"
+        }
+      ]
+    }
+  ]
+}

@@ -47,22 +47,72 @@ fn show_audit(report : @alignment.Report) -> Unit {
 }
 
 ///|
-fn run(args : FixedArray[String]) -> Int32 raise {
-  let (path, json) = match args[:] {
-    ["audit", path] => (path, false)
-    ["audit", path, "--json"] => (path, true)
-    _ =>
-      raise UsageError(
-        "用法：moon run brief -- audit <课程.json> [--json]",
-      )
-  }
+fn audit(path : String, json : Bool) -> Bool raise {
   let report = @alignment.audit(read_blueprint(path))
   if json {
     println(report.to_json().stringify(indent=2))
   } else {
     show_audit(report)
   }
-  if report.ready {
+  report.ready
+}
+
+///|
+fn show_comparison(report : @alignment.Comparison) -> Unit {
+  println("# 课程改版 · \{report.course}")
+  for revision in report.changes {
+    let label = match revision.change {
+      "resolved" => "缺口已补齐"
+      "regressed" => "出现新缺口"
+      "requirements_changed" => "目标要求已变，需重新判断"
+      "evidence_changed" => "证据有变化，达标状态相同"
+      "added" => "新增目标"
+      _ => "移除目标"
+    }
+    println("[\{label}] \{revision.objective}")
+    for pair in [("旧版", revision.before), ("新版", revision.after)] {
+      let (edition, finding) = pair
+      if finding is Some(goal) {
+        let practice = if goal.rehearsal_ready {
+          "满足练习规则"
+        } else {
+          "缺少先行练习"
+        }
+        println(
+          "  \{edition} · \{goal.title} · 达标分值 \{goal.qualifying_points} / \{goal.minimum_points} · \{practice}",
+        )
+      }
+    }
+  }
+  println(
+    "未归属分值 \{report.before_unallocated} → \{report.after_unallocated}",
+  )
+}
+
+///|
+fn compare(before : String, after : String, json : Bool) -> Bool raise {
+  let report = @alignment.compare(read_blueprint(before), read_blueprint(after))
+  if json {
+    println(report.to_json().stringify(indent=2))
+  } else {
+    show_comparison(report)
+  }
+  report.ready
+}
+
+///|
+fn run(args : FixedArray[String]) -> Int32 raise {
+  let ready = match args[:] {
+    ["audit", path] => audit(path, false)
+    ["audit", path, "--json"] => audit(path, true)
+    ["compare", before, after] => compare(before, after, false)
+    ["compare", before, after, "--json"] => compare(before, after, true)
+    _ =>
+      raise UsageError(
+        "用法：moon run brief -- audit <课程.json> [--json]\n      moon run brief -- compare <旧版.json> <新版.json> [--json]",
+      )
+  }
+  if ready {
     0
   } else {
     1

@@ -8,6 +8,8 @@ import {
 // Values
 pub fn audit(String) -> Report raise BlueprintError
 
+pub fn compare(String, String) -> Comparison raise BlueprintError
+
 // Errors
 pub suberror BlueprintError {
   InvalidBlueprint(String)
@@ -15,6 +17,16 @@ pub suberror BlueprintError {
 pub fn BlueprintError::message(Self) -> String
 
 // Types and methods
+#derive(@json.ToJson)
+pub struct Comparison {
+  course : String
+  changes : Array[Revision]
+  before_unallocated : Int32
+  after_unallocated : Int32
+  ready : Bool
+}
+pub fn Comparison::to_json(Self) -> @json.Json
+
 #derive(@json.ToJson)
 pub struct Finding {
   objective : String
@@ -51,6 +63,15 @@ pub struct Report {
   ready : Bool
 }
 pub fn Report::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct Revision {
+  objective : String
+  change : String
+  before : Finding?
+  after : Finding?
+}
+pub fn Revision::to_json(Self) -> @json.Json
 
 #derive(@json.ToJson)
 pub struct Trace {

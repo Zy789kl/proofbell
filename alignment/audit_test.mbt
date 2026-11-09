@@ -139,3 +139,47 @@ fn audit_error(text : String) -> String raise {
     _ => fail("expected an invalid blueprint")
   }
 }
+
+///|
+test "revision comparison distinguishes a repaired gap from a regression" {
+  let before = blueprint([assessment(3, 14), rehearsal(3)])
+  let after = blueprint([assessment(3, 14), rehearsal(2)])
+  let repaired = @alignment.compare(before, after)
+  assert_true(repaired.ready)
+  assert_eq(repaired.changes.length(), 1)
+  assert_eq(repaired.changes[0].objective, "check")
+  assert_eq(repaired.changes[0].change, "resolved")
+  let regressed = @alignment.compare(after, before)
+  assert_false(regressed.ready)
+  assert_eq(regressed.changes[0].change, "regressed")
+}
+
+///|
+test "rewriting the objective is a change of requirements" {
+  let before = blueprint([assessment(3, 14), rehearsal(2)])
+  let after = before.replace(
+    old="Check a source",
+    new="Interpret source context",
+  )
+  let comparison = @alignment.compare(before, after)
+  assert_eq(comparison.changes.length(), 1)
+  assert_eq(comparison.changes[0].change, "requirements_changed")
+}
+
+///|
+test "reordering blueprint entries does not change the evidence" {
+  let before = blueprint([assessment(3, 14), rehearsal(2)])
+  let after = blueprint([rehearsal(2), assessment(3, 14)])
+  assert_true(@alignment.compare(before, after).changes.is_empty())
+}
+
+///|
+test "compare refuses unrelated courses" {
+  let before = blueprint([])
+  let after = before.replace(old="test-course", new="other-course")
+  try @alignment.compare(before, after) catch {
+    error => assert_true(error.message().contains("same course ID"))
+  } noraise {
+    _ => fail("expected a course mismatch")
+  }
+}

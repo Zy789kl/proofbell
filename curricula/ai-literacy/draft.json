@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "course": "ai-source-check",
+  "title": "生成式 AI 素养 · 引用能追到哪里",
+  "objectives": [
+    {
+      "id": "recognize",
+      "title": "识别 AI 生成引用的常见失真线索",
+      "level": 1,
+      "minimum_points": 10,
+      "require_rehearsal": false
+    },
+    {
+      "id": "verify",
+      "title": "用原始文献核验 AI 给出的引文",
+      "level": 3,
+      "minimum_points": 20,
+      "require_rehearsal": true
+    },
+    {
+      "id": "justify",
+      "title": "根据证据说明应采用、修订或删除一条引文",
+      "level": 4,
+      "minimum_points": 15,
+      "require_rehearsal": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "guided-search",
+      "title": "跟着检索单找回原始论文",
+      "phase": 1,
+      "kind": "practice",
+      "points": 0,
+      "links": [
+        {
+          "objective": "verify",
+          "level": 3,
+          "points": 0,
+          "criterion": "记录 DOI、版本与原文段落"
+        }
+      ]
+    },
+    {
+      "id": "terminology-quiz",
+      "title": "AI 引用术语测验",
+      "phase": 2,
+      "kind": "assessment",
+      "points": 30,
+      "links": [
+        {
+          "objective": "recognize",
+          "level": 1,
+          "points": 10,
+          "criterion": "指出虚构期刊名的线索"
+        },
+        {
+          "objective": "verify",
+          "level": 1,
+          "points": 20,
+          "criterion": "选出 DOI 的含义"
+        }
+      ]
+    },
+    {
+      "id": "editor-note",
+      "title": "给课程编辑写引文处理说明",
+      "phase": 3,
+      "kind": "assessment",
+      "points": 20,
+      "links": [
+        {
+          "objective": "justify",
+          "level": 4,
+          "points": 15,
+          "criterion": "对照出处和引用语境，为取舍辩护"
+        }
+      ]
+    },
+    {
+      "id": "peer-review",
+      "title": "同伴互审引用处理说明",
+      "phase": 4,
+      "kind": "practice",
+      "points": 0,
+      "links": [
+        {
+          "objective": "justify",
+          "level": 4,
+          "points": 0,
+          "criterion": "用证据回应同伴提出的反例"
+        }
+      ]
+    }
+  ]
+}

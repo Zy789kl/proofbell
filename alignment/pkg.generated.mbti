@@ -1,0 +1,70 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Zy789kl/proofbell/alignment"
+
+import {
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn audit(String) -> Report raise BlueprintError
+
+// Errors
+pub suberror BlueprintError {
+  InvalidBlueprint(String)
+}
+pub fn BlueprintError::message(Self) -> String
+
+// Types and methods
+#derive(@json.ToJson)
+pub struct Finding {
+  objective : String
+  title : String
+  level : Int32
+  minimum_points : Int32
+  require_rehearsal : Bool
+  qualifying_points : Int32
+  first_assessment_phase : Int32?
+  first_rehearsal_phase : Int32?
+  rehearsal_ready : Bool
+  ready : Bool
+  trace : Array[Trace]
+}
+pub fn Finding::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct PointRemainder {
+  item_id : String
+  item_title : String
+  points : Int32
+}
+pub fn PointRemainder::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct Report {
+  course : String
+  title : String
+  objectives : Array[Finding]
+  assessment_points : Int32
+  unallocated_points : Int32
+  point_remainders : Array[PointRemainder]
+  unmapped_evidence : Array[String]
+  ready : Bool
+}
+pub fn Report::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct Trace {
+  item_id : String
+  item_title : String
+  kind : String
+  phase : Int32
+  level : Int32
+  criterion : String
+  points : Int32
+  meets_level : Bool
+}
+pub fn Trace::to_json(Self) -> @json.Json
+
+// Type aliases
+
+// Traits

@@ -66,6 +66,7 @@ moon run brief -- review-sheet curricula/ai-literacy/draft.json --output review.
 ```sh
 moon check --deny-warn
 moon test --deny-warn
+moon run verify.mbtx --deny-warn
 moon package --list
 ```
 

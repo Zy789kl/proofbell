@@ -1,0 +1,70 @@
+----
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/json",
+}
+----
+
+///|
+async fn invoke(arguments : Array[String], expected : Int32) -> String {
+  let output = @shell.Cmd(
+    "moon",
+    ["run", "--release", "brief", "--", ..arguments],
+  ).output(timeout_ms=30000)
+  guard output.exit_code() == expected else {
+    fail(
+      "Expected exit \{expected}, got \{output.exit_code()} for \{arguments[0]}: \{output.stderr()}",
+    )
+  }
+  output.stdout()
+}
+
+///|
+async fn main {
+  let draft = "curricula/ai-literacy/draft.json"
+  let revised = "curricula/ai-literacy/revised.json"
+  let workshop = "curricula/teacher-workshop.json"
+  let training = "curricula/workplace-training.json"
+  for (path, status) in [(draft, 1), (revised, 0), (workshop, 0), (training, 1)] {
+    let audit = @json.parse(invoke(["audit", path, "--json"], status))
+    if status == 0 {
+      assert_true(audit is { "ready": true, .. })
+    } else {
+      assert_true(audit is { "ready": false, .. })
+    }
+  }
+  let gate = @json.parse(invoke(["gate", revised, draft], 1))
+  assert_true(gate is { "accepted": false, .. })
+  let comparison = @json.parse(invoke(["compare", draft, revised, "--json"], 0))
+  assert_true(
+    comparison is { "after_unallocated": 0, "before_unallocated": 5, .. },
+  )
+  let repairs = @json.parse(invoke(["repairs", draft, "--json"], 1))
+  assert_true(repairs is { "ready": false, "tasks": [_, _, _], .. })
+  assert_true(invoke(["compare", draft, workshop], 2).trim().is_empty())
+  let portfolio = @json.parse(
+    invoke(["portfolio", revised, workshop, training], 1),
+  )
+  assert_true(portfolio is { "ready_courses": 2, .. })
+  let repaired = invoke(["review-sheet", revised], 0)
+  let original = invoke(["review-sheet", draft], 1)
+  assert_true(repaired.contains("目标通过 3 / 3"))
+  assert_true(original.contains("未归属 5 分"))
+  let imported = @json.parse(
+    invoke(
+      [
+        "import-table", "lab", "实验课", "curricula/lab-tables/objectives.tsv",
+        "curricula/lab-tables/evidence.tsv", "curricula/lab-tables/links.tsv",
+      ],
+      0,
+    ),
+  )
+  assert_true(
+    imported
+    is { "course": "lab", "objectives": [{ "minimum_points": 5, .. }], .. },
+  )
+  println(
+    "Verified four audits, comparison, gate, repair list, portfolio, HTML and TSV.",
+  )
+}

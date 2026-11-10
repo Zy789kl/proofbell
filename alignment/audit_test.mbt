@@ -91,6 +91,11 @@ test "same phase does not establish that rehearsal came first" {
   assert_eq(report.objectives[0].qualifying_points, 10)
   assert_false(report.objectives[0].rehearsal_ready)
   assert_false(report.ready)
+  let tasks = @alignment.repairs(report)
+  assert_eq(tasks.length(), 1)
+  assert_eq(tasks[0].kind, "rehearsal_late")
+  assert_eq(tasks[0].assessment_phase, Some(3))
+  assert_eq(tasks[0].rehearsal_phase, Some(3))
   assert_true(
     @alignment.audit(blueprint([assessment(4, 14), rehearsal(2)])).ready,
   )
@@ -102,6 +107,7 @@ test "an unallocated mark blocks readiness even when both objectives pass" {
   assert_true(report.objectives[0].ready)
   assert_true(report.objectives[1].ready)
   assert_false(report.ready)
+  assert_eq(@alignment.repairs(report)[0].amount, Some(1))
 }
 
 ///|
@@ -164,6 +170,20 @@ test "rewriting the objective is a change of requirements" {
   let comparison = @alignment.compare(before, after)
   assert_eq(comparison.changes.length(), 1)
   assert_eq(comparison.changes[0].change, "requirements_changed")
+  assert_eq(@alignment.gate_flags(comparison)[0].reason, "requirements_changed")
+}
+
+///|
+test "revision gate allows inherited gaps and catches a deficit that grows" {
+  let before = blueprint([rehearsal(3), assessment(3, 14)])
+  let unchanged = @alignment.compare(before, before)
+  assert_false(unchanged.ready)
+  assert_true(@alignment.gate_flags(unchanged).is_empty())
+  let after = blueprint([rehearsal(3), assessment(2, 14)])
+  let flags = @alignment.gate_flags(@alignment.compare(before, after))
+  assert_eq(flags.length(), 1)
+  assert_eq(flags[0].target, "check")
+  assert_eq(flags[0].reason, "assessment_deficit_grew")
 }
 
 ///|

@@ -14,6 +14,10 @@ pub fn compare(String, String) -> Comparison raise BlueprintError
 
 pub fn compare_blueprints(Blueprint, Blueprint) -> Comparison raise BlueprintError
 
+pub fn gate_flags(Comparison) -> Array[GateFlag]
+
+pub fn repairs(Report) -> Array[Repair]
+
 // Errors
 pub suberror BlueprintError {
   InvalidBlueprint(String)
@@ -73,6 +77,13 @@ pub struct Finding {
 }
 pub fn Finding::to_json(Self) -> @json.Json
 
+#derive(@json.ToJson)
+pub struct GateFlag {
+  target : String
+  reason : String
+}
+pub fn GateFlag::to_json(Self) -> @json.Json
+
 #derive(@json.FromJson, @json.ToJson)
 pub(all) struct Link {
   objective : String
@@ -109,6 +120,16 @@ pub struct RemainderChange {
   after : PointRemainder?
 }
 pub fn RemainderChange::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct Repair {
+  kind : String
+  target : String
+  amount : Int32?
+  rehearsal_phase : Int32?
+  assessment_phase : Int32?
+}
+pub fn Repair::to_json(Self) -> @json.Json
 
 #derive(@json.ToJson)
 pub struct Report {

@@ -164,6 +164,7 @@ fn run(args : FixedArray[String]) -> Int32 raise {
     ["compare", before, after] => compare(before, after, false)
     ["compare", before, after, "--json"] => compare(before, after, true)
     ["gate", before, after] => gate(before, after)
+    ["portfolio", .. paths] => portfolio(paths)
     ["import-table", course, title, objectives, evidence, links] =>
       import_table(course, title, objectives, evidence, links, None)
     [
@@ -178,7 +179,7 @@ fn run(args : FixedArray[String]) -> Int32 raise {
     ] => import_table(course, title, objectives, evidence, links, Some(output))
     _ =>
       raise UsageError(
-        "用法：moon run brief -- audit <课程.json> [--json]\n      moon run brief -- compare <旧版.json> <新版.json> [--json]\n      moon run brief -- gate <旧版.json> <新版.json>\n      moon run brief -- review-sheet <课程.json> [--output 审阅单.html]\n      moon run brief -- repairs <课程.json> [--json]\n      moon run brief -- import-table <课程编号> <标题> <目标.tsv> <活动.tsv> <关联.tsv> [--output 蓝图.json]",
+        "用法：moon run brief -- audit <课程.json> [--json]\n      moon run brief -- compare <旧版.json> <新版.json> [--json]\n      moon run brief -- gate <旧版.json> <新版.json>\n      moon run brief -- portfolio <课程.json> ...\n      moon run brief -- review-sheet <课程.json> [--output 审阅单.html]\n      moon run brief -- repairs <课程.json> [--json]\n      moon run brief -- import-table <课程编号> <标题> <目标.tsv> <活动.tsv> <关联.tsv> [--output 蓝图.json]",
       )
   }
   if ready {

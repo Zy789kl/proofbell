@@ -203,3 +203,23 @@ test "compare refuses unrelated courses" {
     _ => fail("expected a course mismatch")
   }
 }
+
+///|
+test "portfolio preserves course order and rejects counting a revision twice" {
+  let input = blueprint([rehearsal(2), assessment(3, 14)])
+  let ready = @alignment.audit(input)
+  let other = @alignment.audit(
+    blueprint([]).replace(old="test-course", new="other-course"),
+  )
+  let summary = @alignment.portfolio([other, ready])
+  assert_false(summary.ready)
+  assert_eq(summary.ready_courses, 1)
+  assert_eq(summary.courses.map(course => course.course), [
+    "other-course", "test-course",
+  ])
+  try @alignment.portfolio([ready, ready]) catch {
+    error => assert_true(error.message().contains("duplicate course"))
+  } noraise {
+    _ => fail("expected duplicate course rejection")
+  }
+}

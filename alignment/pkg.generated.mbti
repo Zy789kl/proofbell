@@ -16,6 +16,8 @@ pub fn compare_blueprints(Blueprint, Blueprint) -> Comparison raise BlueprintErr
 
 pub fn gate_flags(Comparison) -> Array[GateFlag]
 
+pub fn portfolio(Array[Report]) -> Portfolio raise BlueprintError
+
 pub fn repairs(Report) -> Array[Repair]
 
 // Errors
@@ -48,6 +50,18 @@ pub struct Comparison {
   ready : Bool
 }
 pub fn Comparison::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct CourseSummary {
+  course : String
+  title : String
+  ready : Bool
+  objectives : Int32
+  ready_objectives : Int32
+  unallocated_points : Int32
+  unmapped_items : Int32
+}
+pub fn CourseSummary::to_json(Self) -> @json.Json
 
 #derive(@json.FromJson, @json.ToJson)
 pub(all) struct Evidence {
@@ -112,6 +126,14 @@ pub struct PointRemainder {
   points : Int32
 }
 pub fn PointRemainder::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct Portfolio {
+  courses : Array[CourseSummary]
+  ready_courses : Int32
+  ready : Bool
+}
+pub fn Portfolio::to_json(Self) -> @json.Json
 
 #derive(@json.ToJson)
 pub struct RemainderChange {

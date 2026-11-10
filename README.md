@@ -30,6 +30,14 @@ moon run brief -- compare curricula/ai-literacy/draft.json curricula/ai-literacy
 
 把 [教师研修](curricula/teacher-workshop.json) 或 [岗位培训](curricula/workplace-training.json) 复制一份，即可用自己的题目替换。填表字段和判定条件见 [蓝图说明](curricula/blueprint.md)。
 
+同时复核多门课时，可汇总各课程达标目标数量和未归属分值：
+
+```sh
+moon run brief -- portfolio curricula/ai-literacy/revised.json curricula/teacher-workshop.json curricula/workplace-training.json
+```
+
+结果是 JSON，按输入顺序列出课程，分值保留在各自课程内。每个课程编号只可出现一次。此例有一门课需要复核，因此返回 1。
+
 ## 从表格导入蓝图
 
 目标、活动和评分映射也可从电子表格整理成三份 UTF-8 TSV。以 [实验课样例](curricula/lab-tables/) 为模板，保留首行字段名，每个单元格使用单行文本。导入后沿用相同的蓝图校验：

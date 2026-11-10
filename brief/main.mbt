@@ -58,6 +58,13 @@ fn audit(path : String, json : Bool) -> Bool raise {
 }
 
 ///|
+fn review_sheet(path : String) -> Bool raise {
+  let report = @alignment.audit(read_blueprint(path))
+  println(render_review_sheet(report))
+  report.ready
+}
+
+///|
 fn show_comparison(report : @alignment.Comparison) -> Unit {
   println("# 课程改版 · \{report.course}")
   for revision in report.changes {
@@ -105,11 +112,12 @@ fn run(args : FixedArray[String]) -> Int32 raise {
   let ready = match args[:] {
     ["audit", path] => audit(path, false)
     ["audit", path, "--json"] => audit(path, true)
+    ["review-sheet", path] => review_sheet(path)
     ["compare", before, after] => compare(before, after, false)
     ["compare", before, after, "--json"] => compare(before, after, true)
     _ =>
       raise UsageError(
-        "用法：moon run brief -- audit <课程.json> [--json]\n      moon run brief -- compare <旧版.json> <新版.json> [--json]",
+        "用法：moon run brief -- audit <课程.json> [--json]\n      moon run brief -- compare <旧版.json> <新版.json> [--json]\n      moon run brief -- review-sheet <课程.json>",
       )
   }
   if ready {

@@ -24,6 +24,14 @@ moon run brief -- compare curricula/ai-literacy/draft.json curricula/ai-literacy
 
 把 [教师研修](curricula/teacher-workshop.json) 或 [岗位培训](curricula/workplace-training.json) 复制一份，即可用自己的题目替换。填表字段和判定条件见 [蓝图说明](curricula/blueprint.md)。
 
+## 带着审阅单开教研会
+
+```sh
+moon run brief -- review-sheet curricula/ai-literacy/draft.json > review.html
+```
+
+在浏览器离线打开生成的 HTML，可打印或用浏览器另存 PDF。审阅单按目标列出题号、评分细则、达标分值和先行练习缺口，每个目标留有记录标注依据与修改决定的空白。示例有缺口，命令会生成报告并返回退出码 1。
+
 ## 设计边界
 
 `alignment/` 是独立 MoonBit 库，`audit(String)` 接收课程蓝图并返回可序列化的报告。`brief/` 负责本地文件读取和展示。`curricula/` 保存可复验的课程蓝图。

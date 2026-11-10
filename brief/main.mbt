@@ -58,10 +58,43 @@ fn audit(path : String, json : Bool) -> Bool raise {
 }
 
 ///|
-fn review_sheet(path : String) -> Bool raise {
+fn emit_document(content : String, output : String?) -> Unit raise UsageError {
+  match output {
+    None => println(content)
+    Some(path) => {
+      let error = write_new_file(path, content)
+      if !error.is_empty() {
+        raise UsageError("无法创建输出文件（\{error}）")
+      }
+    }
+  }
+}
+
+///|
+fn review_sheet(path : String, output : String?) -> Bool raise {
   let report = @alignment.audit(read_blueprint(path))
-  println(render_review_sheet(report))
+  emit_document(render_review_sheet(report), output)
   report.ready
+}
+
+///|
+fn import_table(
+  course : String,
+  title : String,
+  objectives : String,
+  evidence : String,
+  links : String,
+  output : String?,
+) -> Bool raise {
+  let plan = @tables.import_tables(
+    course~,
+    title~,
+    objectives=read_blueprint(objectives),
+    evidence=read_blueprint(evidence),
+    links=read_blueprint(links),
+  )
+  emit_document(plan.to_json().stringify(), output)
+  true
 }
 
 ///|
@@ -123,26 +156,29 @@ fn run(args : FixedArray[String]) -> Int32 raise {
   let ready = match args[:] {
     ["audit", path] => audit(path, false)
     ["audit", path, "--json"] => audit(path, true)
-    ["review-sheet", path] => review_sheet(path)
+    ["review-sheet", path] => review_sheet(path, None)
+    ["review-sheet", path, "--output", output] =>
+      review_sheet(path, Some(output))
     ["repairs", path] => repair_list(path, false)
     ["repairs", path, "--json"] => repair_list(path, true)
     ["compare", before, after] => compare(before, after, false)
     ["compare", before, after, "--json"] => compare(before, after, true)
     ["gate", before, after] => gate(before, after)
-    ["import-table", course, title, objectives, evidence, links] => {
-      let plan = @tables.import_tables(
-        course~,
-        title~,
-        objectives=read_blueprint(objectives),
-        evidence=read_blueprint(evidence),
-        links=read_blueprint(links),
-      )
-      println(plan.to_json().stringify())
-      true
-    }
+    ["import-table", course, title, objectives, evidence, links] =>
+      import_table(course, title, objectives, evidence, links, None)
+    [
+      "import-table",
+      course,
+      title,
+      objectives,
+      evidence,
+      links,
+      "--output",
+      output,
+    ] => import_table(course, title, objectives, evidence, links, Some(output))
     _ =>
       raise UsageError(
-        "用法：moon run brief -- audit <课程.json> [--json]\n      moon run brief -- compare <旧版.json> <新版.json> [--json]\n      moon run brief -- gate <旧版.json> <新版.json>\n      moon run brief -- review-sheet <课程.json>\n      moon run brief -- repairs <课程.json> [--json]\n      moon run brief -- import-table <课程编号> <标题> <目标.tsv> <活动.tsv> <关联.tsv>",
+        "用法：moon run brief -- audit <课程.json> [--json]\n      moon run brief -- compare <旧版.json> <新版.json> [--json]\n      moon run brief -- gate <旧版.json> <新版.json>\n      moon run brief -- review-sheet <课程.json> [--output 审阅单.html]\n      moon run brief -- repairs <课程.json> [--json]\n      moon run brief -- import-table <课程编号> <标题> <目标.tsv> <活动.tsv> <关联.tsv> [--output 蓝图.json]",
       )
   }
   if ready {

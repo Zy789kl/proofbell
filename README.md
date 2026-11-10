@@ -35,17 +35,19 @@ moon run brief -- compare curricula/ai-literacy/draft.json curricula/ai-literacy
 目标、活动和评分映射也可从电子表格整理成三份 UTF-8 TSV。以 [实验课样例](curricula/lab-tables/) 为模板，保留首行字段名，每个单元格使用单行文本。导入后沿用相同的蓝图校验：
 
 ```sh
-moon run brief -- import-table lab "实验课" curricula/lab-tables/objectives.tsv curricula/lab-tables/evidence.tsv curricula/lab-tables/links.tsv > lab.json
+moon run brief -- import-table lab "实验课" curricula/lab-tables/objectives.tsv curricula/lab-tables/evidence.tsv curricula/lab-tables/links.tsv --output lab.json
 moon run brief -- audit lab.json
 ```
 
 ## 带着审阅单开教研会
 
 ```sh
-moon run brief -- review-sheet curricula/ai-literacy/draft.json > review.html
+moon run brief -- review-sheet curricula/ai-literacy/draft.json --output review.html
 ```
 
 在浏览器离线打开生成的 HTML，可打印或用浏览器另存 PDF。审阅单按目标列出题号、评分细则、达标分值和先行练习缺口，每个目标留有记录标注依据与修改决定的空白。示例有缺口，命令会生成报告并返回退出码 1。
+
+`--output` 创建 UTF-8 文件，目标文件已存在时返回退出码 2。省略该选项时结果写到标准输出，便于接入其他命令。
 
 ## 设计边界
 

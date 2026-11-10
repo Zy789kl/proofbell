@@ -34,5 +34,26 @@ extern "js" fn stderr(message : String) -> Unit =
   #| message => console.error(message)
 
 ///|
+extern "js" fn write_new_file(path : String, content : String) -> String =
+  #| (path, content) => {
+  #|   const fs = process.getBuiltinModule("node:fs");
+  #|   let fd;
+  #|   try {
+  #|     fd = fs.openSync(path, "wx");
+  #|     try {
+  #|       fs.writeFileSync(fd, content, "utf8");
+  #|     } finally {
+  #|       fs.closeSync(fd);
+  #|     }
+  #|     return "";
+  #|   } catch (error) {
+  #|     if (fd !== undefined) {
+  #|       try { fs.unlinkSync(path); } catch {}
+  #|     }
+  #|     return error.code || "Unable to write a UTF-8 file";
+  #|   }
+  #| }
+
+///|
 extern "js" fn set_status(status : Int32) -> Unit =
   #| status => { process.exitCode = status; }

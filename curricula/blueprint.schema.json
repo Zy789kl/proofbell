@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Proofbell course blueprint",
+  "type": "object",
+  "required": ["schema","course","title","objectives","evidence"],
+  "properties": {
+    "schema": {"const":1},
+    "course": {"$ref":"#/$defs/id"},
+    "title": {"$ref":"#/$defs/label"},
+    "objectives": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {"$ref":"#/$defs/objective"}
+    },
+    "evidence": {"type":"array","maxItems":1000,"items":{"$ref":"#/$defs/item"}}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 48,
+      "not": {"pattern": "[^a-z0-9_-]"}
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400,
+      "pattern": "\\S",
+      "not": {"pattern": "[\\u0000-\\u001f\\u007f]"}
+    },
+    "level": {"type":"integer","minimum":1,"maximum":4},
+    "objective": {
+      "type": "object",
+      "required": ["id","title","level","minimum_points","require_rehearsal"],
+      "properties": {
+        "id": {"$ref":"#/$defs/id"},
+        "title": {"$ref":"#/$defs/label"},
+        "level": {"$ref":"#/$defs/level"},
+        "minimum_points": {"type":"integer","minimum":1,"maximum":1000000},
+        "require_rehearsal": {"type":"boolean"}
+      }
+    },
+    "link": {
+      "type": "object",
+      "required": ["objective","level","points","criterion"],
+      "properties": {
+        "objective": {"$ref":"#/$defs/id"},
+        "level": {"$ref":"#/$defs/level"},
+        "points": {"type":"integer","minimum":0,"maximum":1000},
+        "criterion": {"$ref":"#/$defs/label"}
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": ["id","title","phase","kind","points","links"],
+      "properties": {
+        "id": {"$ref":"#/$defs/id"},
+        "title": {"$ref":"#/$defs/label"},
+        "phase": {"type":"integer","minimum":1,"maximum":10000},
+        "kind": {"enum":["assessment","practice"]},
+        "points": {"type":"integer","minimum":0,"maximum":1000},
+        "links": {"type":"array","maxItems":200,"items":{"$ref":"#/$defs/link"}}
+      },
+      "if": {"properties":{"kind":{"const":"practice"}}},
+      "then": {
+        "properties": {"points":{"const":0},"links":{"items":{"properties":{"points":{"const":0}}}}}
+      },
+      "else": {
+        "properties": {
+          "points": {"minimum":1},
+          "links": {"items":{"properties":{"points":{"minimum":1}}}}
+        }
+      }
+    }
+  }
+}

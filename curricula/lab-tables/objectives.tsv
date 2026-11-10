@@ -1,0 +1,2 @@
+id	title	level	minimum_points	require_rehearsal
+check-data	按检查表排除采样异常	3	5	true

@@ -1,5 +1,5 @@
 ///|
-#derive(FromJson)
+#derive(FromJson, ToJson)
 pub(all) struct Blueprint {
   schema : Int32
   course : String
@@ -9,7 +9,7 @@ pub(all) struct Blueprint {
 }
 
 ///|
-#derive(FromJson)
+#derive(FromJson, ToJson)
 pub(all) struct Objective {
   id : String
   title : String
@@ -19,7 +19,7 @@ pub(all) struct Objective {
 }
 
 ///|
-#derive(FromJson)
+#derive(FromJson, ToJson)
 pub(all) struct Evidence {
   id : String
   title : String
@@ -30,7 +30,7 @@ pub(all) struct Evidence {
 }
 
 ///|
-#derive(FromJson)
+#derive(FromJson, ToJson)
 pub(all) struct Link {
   objective : String
   level : Int32
@@ -42,13 +42,25 @@ pub(all) struct Link {
 pub extend Blueprint with @json.FromJson::{from_json}
 
 ///|
+pub extend Blueprint with @json.ToJson::{to_json}
+
+///|
 pub extend Objective with @json.FromJson::{from_json}
+
+///|
+pub extend Objective with @json.ToJson::{to_json}
 
 ///|
 pub extend Evidence with @json.FromJson::{from_json}
 
 ///|
+pub extend Evidence with @json.ToJson::{to_json}
+
+///|
 pub extend Link with @json.FromJson::{from_json}
+
+///|
+pub extend Link with @json.ToJson::{to_json}
 
 ///|
 pub suberror BlueprintError {

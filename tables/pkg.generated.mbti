@@ -1,0 +1,20 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Zy789kl/proofbell/tables"
+
+import {
+  "Zy789kl/proofbell/alignment",
+}
+
+// Values
+pub fn import_tables(course~ : String, title~ : String, objectives~ : String, evidence~ : String, links~ : String) -> @alignment.Blueprint raise TableError
+
+// Errors
+pub suberror TableError {
+  InvalidTable(String)
+}
+
+// Types and methods
+
+// Type aliases
+
+// Traits

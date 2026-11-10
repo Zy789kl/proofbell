@@ -1,0 +1,3 @@
+item_id	objective	level	points	criterion
+practice	check-data	3	0	标记重复样本编号并指出原始记录
+check	check-data	3	5	根据检查表定位异常并写出复查步骤

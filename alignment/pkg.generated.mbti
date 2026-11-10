@@ -21,7 +21,7 @@ pub suberror BlueprintError {
 pub fn BlueprintError::message(Self) -> String
 
 // Types and methods
-#derive(@json.FromJson)
+#derive(@json.FromJson, @json.ToJson)
 pub(all) struct Blueprint {
   schema : Int32
   course : String
@@ -30,6 +30,7 @@ pub(all) struct Blueprint {
   evidence : Array[Evidence]
 }
 pub fn Blueprint::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Blueprint::to_json(Self) -> @json.Json
 
 #derive(@json.ToJson)
 pub struct Comparison {
@@ -44,7 +45,7 @@ pub struct Comparison {
 }
 pub fn Comparison::to_json(Self) -> @json.Json
 
-#derive(@json.FromJson)
+#derive(@json.FromJson, @json.ToJson)
 pub(all) struct Evidence {
   id : String
   title : String
@@ -54,6 +55,7 @@ pub(all) struct Evidence {
   links : Array[Link]
 }
 pub fn Evidence::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Evidence::to_json(Self) -> @json.Json
 
 #derive(@json.ToJson)
 pub struct Finding {
@@ -71,7 +73,7 @@ pub struct Finding {
 }
 pub fn Finding::to_json(Self) -> @json.Json
 
-#derive(@json.FromJson)
+#derive(@json.FromJson, @json.ToJson)
 pub(all) struct Link {
   objective : String
   level : Int32
@@ -79,8 +81,9 @@ pub(all) struct Link {
   criterion : String
 }
 pub fn Link::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Link::to_json(Self) -> @json.Json
 
-#derive(@json.FromJson)
+#derive(@json.FromJson, @json.ToJson)
 pub(all) struct Objective {
   id : String
   title : String
@@ -89,6 +92,7 @@ pub(all) struct Objective {
   require_rehearsal : Bool
 }
 pub fn Objective::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Objective::to_json(Self) -> @json.Json
 
 #derive(@json.ToJson)
 pub struct PointRemainder {

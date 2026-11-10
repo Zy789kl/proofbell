@@ -26,6 +26,15 @@ moon run brief -- compare curricula/ai-literacy/draft.json curricula/ai-literacy
 
 把 [教师研修](curricula/teacher-workshop.json) 或 [岗位培训](curricula/workplace-training.json) 复制一份，即可用自己的题目替换。填表字段和判定条件见 [蓝图说明](curricula/blueprint.md)。
 
+## 从表格导入蓝图
+
+目标、活动和评分映射也可从电子表格整理成三份 UTF-8 TSV。以 [实验课样例](curricula/lab-tables/) 为模板，保留首行字段名，每个单元格使用单行文本。导入后沿用相同的蓝图校验：
+
+```sh
+moon run brief -- import-table lab "实验课" curricula/lab-tables/objectives.tsv curricula/lab-tables/evidence.tsv curricula/lab-tables/links.tsv > lab.json
+moon run brief -- audit lab.json
+```
+
 ## 带着审阅单开教研会
 
 ```sh

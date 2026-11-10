@@ -126,9 +126,20 @@ fn run(args : FixedArray[String]) -> Int32 raise {
     ["review-sheet", path] => review_sheet(path)
     ["compare", before, after] => compare(before, after, false)
     ["compare", before, after, "--json"] => compare(before, after, true)
+    ["import-table", course, title, objectives, evidence, links] => {
+      let plan = @tables.import_tables(
+        course~,
+        title~,
+        objectives=read_blueprint(objectives),
+        evidence=read_blueprint(evidence),
+        links=read_blueprint(links),
+      )
+      println(plan.to_json().stringify())
+      true
+    }
     _ =>
       raise UsageError(
-        "用法：moon run brief -- audit <课程.json> [--json]\n      moon run brief -- compare <旧版.json> <新版.json> [--json]\n      moon run brief -- review-sheet <课程.json>",
+        "用法：moon run brief -- audit <课程.json> [--json]\n      moon run brief -- compare <旧版.json> <新版.json> [--json]\n      moon run brief -- review-sheet <课程.json>\n      moon run brief -- import-table <课程编号> <标题> <目标.tsv> <活动.tsv> <关联.tsv>",
       )
   }
   if ready {
@@ -146,6 +157,10 @@ fn main {
       2
     }
     @alignment.InvalidBlueprint(message) => {
+      stderr(message)
+      2
+    }
+    @tables.InvalidTable(message) => {
       stderr(message)
       2
     }

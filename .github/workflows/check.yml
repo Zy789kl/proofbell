@@ -20,6 +20,8 @@ jobs:
       - run: moon check --deny-warn
       - run: moon test --deny-warn
       - run: moon test alignment --target wasm --deny-warn
+      - run: moon test tables --target wasm --deny-warn
       - run: moon build --release
+      - run: moon update
       - run: moon run verify.mbtx --deny-warn
       - run: moon package --list

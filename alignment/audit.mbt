@@ -110,7 +110,14 @@ fn summarize(goal : Objective, trace : Array[Trace]) -> Finding {
 /// Audit a schema-1 blueprint. The report preserves its objective and evidence
 /// order, with links below the required demand kept visible for review.
 pub fn audit(text : String) -> Report raise BlueprintError {
-  let plan = decode(text)
+  audit_blueprint(decode(text))
+}
+
+///|
+/// Audit typed course data without a JSON round trip. All blueprint rules
+/// apply equally to structured inputs and imported JSON.
+pub fn audit_blueprint(plan : Blueprint) -> Report raise BlueprintError {
+  validate(plan)
   let indices : Map[String, Int32] = Map([])
   let traces : Array[Array[Trace]] = []
   for i, goal in plan.objectives {

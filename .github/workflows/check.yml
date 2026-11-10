@@ -21,3 +21,5 @@ jobs:
       - run: moon test alignment --target wasm --deny-warn
       - run: moon build --release
       - run: moon run brief -- compare curricula/ai-literacy/draft.json curricula/ai-literacy/revised.json
+      - run: moon run brief -- review-sheet curricula/ai-literacy/revised.json > "$RUNNER_TEMP/proofbell-review.html"
+      - run: moon package --list

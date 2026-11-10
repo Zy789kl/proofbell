@@ -4,9 +4,11 @@
 
 ## 先校一次 AI 素养课
 
-使用 MoonBit（本地验证版本为 moonc 0.10.20）与 Node.js 22.3 或更新版本。在仓库根目录运行：
+安装 [MoonBit](https://www.moonbitlang.com/download/) 和 [Node.js](https://nodejs.org/) 22.3 或更新版本。项目使用 moonc `0.10.20+65efd5b93` 验证。克隆仓库后可直接运行样例：
 
 ```sh
+git clone https://github.com/Zy789kl/proofbell.git
+cd proofbell
 moon run brief -- audit curricula/ai-literacy/draft.json
 ```
 
@@ -20,7 +22,7 @@ moon run brief -- audit curricula/ai-literacy/draft.json
 moon run brief -- compare curricula/ai-literacy/draft.json curricula/ai-literacy/revised.json
 ```
 
-新版把术语选择题改为原始文献核验，安排同伴互审先于编辑说明题，并取消未归属的 5 分。对比显示两个目标的缺口已补齐，未归属分值从 5 变为 0。若直接改了目标文字、等级或分值要求，报告会请教师重新判断。
+新版把术语选择题改为原始文献核验，安排同伴互审先于编辑说明题，并取消未归属的 5 分。对比显示两个目标的缺口已补齐，编辑说明题的未归属分值从 5 变为 0。若直接改了目标文字、等级或分值要求，报告会请教师重新判断。分值总量相同但换了题目时，对比也会逐题显示变动。
 
 把 [教师研修](curricula/teacher-workshop.json) 或 [岗位培训](curricula/workplace-training.json) 复制一份，即可用自己的题目替换。填表字段和判定条件见 [蓝图说明](curricula/blueprint.md)。
 
@@ -34,13 +36,18 @@ moon run brief -- review-sheet curricula/ai-literacy/draft.json > review.html
 
 ## 设计边界
 
-`alignment/` 是独立 MoonBit 库，`audit(String)` 接收课程蓝图并返回可序列化的报告。`brief/` 负责本地文件读取和展示。`curricula/` 保存可复验的课程蓝图。
+`alignment/` 是独立 MoonBit 库，`audit(String)` 接收 JSON 蓝图并返回可序列化的报告。已有结构化课程数据的调用方可用 `audit_blueprint` 与 `compare_blueprints`，见 [MoonBit 接入示例](alignment/README.mbt.md)。`brief/` 负责本地文件读取和展示。`curricula/` 保存可复验的课程蓝图。
 
 目标要求、证据映射、任务难度均由课程设计者判断。程序检查这些声明是否一致。报告用于课前审阅，无法据此判断学生的实际掌握程度。
 
 ```sh
 moon check --deny-warn
 moon test --deny-warn
+moon package --list
 ```
 
-初版的实现、构造样例和测试由 AI 辅助起草并运行验证。课程标注与规则适用性留待参赛者复核，见 [复核记录](curricula/review.md)。
+`moon package --list` 在本地构建发布包并列出包含的文件。可用包内的 `alignment/` 接入示例核对库的调用方式。
+
+项目按 MIT 许可证发布。核心逻辑与审阅单为原创实现，核心库只使用 MoonBit 标准库，命令行使用 Node.js 内置模块读写。仓库中的课程蓝图为构造样例，未使用学生档案、第三方试题库或私有课程材料。工具链生成的接口文件为 `pkg.generated.mbti`。
+
+实现、构造样例、测试与文档使用了 AI 辅助。课程标注与规则适用性留待参赛者复核，见 [复核记录](curricula/review.md)。历次功能变动见 [更新记录](CHANGELOG.md)。

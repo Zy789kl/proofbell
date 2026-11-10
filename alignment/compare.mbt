@@ -14,7 +14,19 @@ pub struct Comparison {
   changes : Array[Revision]
   before_unallocated : Int32
   after_unallocated : Int32
+  remainder_changes : Array[RemainderChange]
+  newly_unmapped : Array[String]
+  no_longer_unmapped : Array[String]
   ready : Bool
+}
+
+///|
+/// A change in marks left unallocated on one assessment.
+#derive(ToJson)
+pub struct RemainderChange {
+  item_id : String
+  before : PointRemainder?
+  after : PointRemainder?
 }
 
 ///|
@@ -22,6 +34,9 @@ pub extend Revision with @json.ToJson::{to_json}
 
 ///|
 pub extend Comparison with @json.ToJson::{to_json}
+
+///|
+pub extend RemainderChange with @json.ToJson::{to_json}
 
 ///|
 fn evidence_changed(before : Array[Trace], after : Array[Trace]) -> Bool {
@@ -70,6 +85,29 @@ pub fn compare(
   let next = audit(after) catch {
     error => raise InvalidBlueprint("After: \{error.message()}")
   }
+  compare_reports(previous, next)
+}
+
+///|
+/// Compare typed snapshots using the same validation and rules as JSON import.
+pub fn compare_blueprints(
+  before : Blueprint,
+  after : Blueprint,
+) -> Comparison raise BlueprintError {
+  let previous = audit_blueprint(before) catch {
+    error => raise InvalidBlueprint("Before: \{error.message()}")
+  }
+  let next = audit_blueprint(after) catch {
+    error => raise InvalidBlueprint("After: \{error.message()}")
+  }
+  compare_reports(previous, next)
+}
+
+///|
+fn compare_reports(
+  previous : Report,
+  next : Report,
+) -> Comparison raise BlueprintError {
   require(
     previous.course == next.course,
     "course",
@@ -112,6 +150,49 @@ pub fn compare(
     changes,
     before_unallocated: previous.unallocated_points,
     after_unallocated: next.unallocated_points,
+    remainder_changes: compare_remainders(
+      previous.point_remainders,
+      next.point_remainders,
+    ),
+    newly_unmapped: id_difference(
+      next.unmapped_evidence,
+      previous.unmapped_evidence,
+    ),
+    no_longer_unmapped: id_difference(
+      previous.unmapped_evidence,
+      next.unmapped_evidence,
+    ),
     ready: next.ready,
   }
+}
+
+///|
+fn id_difference(ids : Array[String], other : Array[String]) -> Array[String] {
+  let existing = Map::from_array(other.map(id => (id, ())))
+  ids.filter(id => !existing.contains(id))
+}
+
+///|
+fn compare_remainders(
+  before : Array[PointRemainder],
+  after : Array[PointRemainder],
+) -> Array[RemainderChange] {
+  let previous = Map::from_array(before.map(item => (item.item_id, item)))
+  let current = Map::from_array(after.map(item => (item.item_id, item)))
+  let changes = []
+  for item in after {
+    let old = previous.get(item.item_id)
+    if old is Some(old) &&
+      old.points == item.points &&
+      old.item_title == item.item_title {
+      continue
+    }
+    changes.push({ item_id: item.item_id, before: old, after: Some(item), })
+  }
+  for item in before {
+    if !current.contains(item.item_id) {
+      changes.push({ item_id: item.item_id, before: Some(item), after: None, })
+    }
+  }
+  changes
 }

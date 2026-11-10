@@ -8,7 +8,11 @@ import {
 // Values
 pub fn audit(String) -> Report raise BlueprintError
 
+pub fn audit_blueprint(Blueprint) -> Report raise BlueprintError
+
 pub fn compare(String, String) -> Comparison raise BlueprintError
+
+pub fn compare_blueprints(Blueprint, Blueprint) -> Comparison raise BlueprintError
 
 // Errors
 pub suberror BlueprintError {
@@ -17,15 +21,39 @@ pub suberror BlueprintError {
 pub fn BlueprintError::message(Self) -> String
 
 // Types and methods
+#derive(@json.FromJson)
+pub(all) struct Blueprint {
+  schema : Int32
+  course : String
+  title : String
+  objectives : Array[Objective]
+  evidence : Array[Evidence]
+}
+pub fn Blueprint::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+
 #derive(@json.ToJson)
 pub struct Comparison {
   course : String
   changes : Array[Revision]
   before_unallocated : Int32
   after_unallocated : Int32
+  remainder_changes : Array[RemainderChange]
+  newly_unmapped : Array[String]
+  no_longer_unmapped : Array[String]
   ready : Bool
 }
 pub fn Comparison::to_json(Self) -> @json.Json
+
+#derive(@json.FromJson)
+pub(all) struct Evidence {
+  id : String
+  title : String
+  phase : Int32
+  kind : String
+  points : Int32
+  links : Array[Link]
+}
+pub fn Evidence::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 
 #derive(@json.ToJson)
 pub struct Finding {
@@ -43,6 +71,25 @@ pub struct Finding {
 }
 pub fn Finding::to_json(Self) -> @json.Json
 
+#derive(@json.FromJson)
+pub(all) struct Link {
+  objective : String
+  level : Int32
+  points : Int32
+  criterion : String
+}
+pub fn Link::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+
+#derive(@json.FromJson)
+pub(all) struct Objective {
+  id : String
+  title : String
+  level : Int32
+  minimum_points : Int32
+  require_rehearsal : Bool
+}
+pub fn Objective::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+
 #derive(@json.ToJson)
 pub struct PointRemainder {
   item_id : String
@@ -50,6 +97,14 @@ pub struct PointRemainder {
   points : Int32
 }
 pub fn PointRemainder::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct RemainderChange {
+  item_id : String
+  before : PointRemainder?
+  after : PointRemainder?
+}
+pub fn RemainderChange::to_json(Self) -> @json.Json
 
 #derive(@json.ToJson)
 pub struct Report {

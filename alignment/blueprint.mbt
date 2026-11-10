@@ -1,6 +1,6 @@
 ///|
 #derive(FromJson)
-priv struct Blueprint {
+pub(all) struct Blueprint {
   schema : Int32
   course : String
   title : String
@@ -10,7 +10,7 @@ priv struct Blueprint {
 
 ///|
 #derive(FromJson)
-priv struct Objective {
+pub(all) struct Objective {
   id : String
   title : String
   level : Int32
@@ -20,7 +20,7 @@ priv struct Objective {
 
 ///|
 #derive(FromJson)
-priv struct Evidence {
+pub(all) struct Evidence {
   id : String
   title : String
   phase : Int32
@@ -31,12 +31,24 @@ priv struct Evidence {
 
 ///|
 #derive(FromJson)
-priv struct Link {
+pub(all) struct Link {
   objective : String
   level : Int32
   points : Int32
   criterion : String
 }
+
+///|
+pub extend Blueprint with @json.FromJson::{from_json}
+
+///|
+pub extend Objective with @json.FromJson::{from_json}
+
+///|
+pub extend Evidence with @json.FromJson::{from_json}
+
+///|
+pub extend Link with @json.FromJson::{from_json}
 
 ///|
 pub suberror BlueprintError {
@@ -220,12 +232,10 @@ fn decode(text : String) -> Blueprint raise BlueprintError {
   ) catch {
     err => raise InvalidBlueprint("Invalid JSON: \{@debug.to_string(err)}")
   }
-  let plan : Blueprint = @json.from_json(value) catch {
+  @json.from_json(value) catch {
     err =>
       raise InvalidBlueprint(
         "Invalid blueprint fields: \{@debug.to_string(err)}",
       )
   }
-  validate(plan)
-  plan
 }

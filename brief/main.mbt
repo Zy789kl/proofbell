@@ -94,6 +94,17 @@ fn show_comparison(report : @alignment.Comparison) -> Unit {
   println(
     "未归属分值 \{report.before_unallocated} → \{report.after_unallocated}",
   )
+  for change in report.remainder_changes {
+    let before = change.before.map(item => item.points).unwrap_or(0)
+    let after = change.after.map(item => item.points).unwrap_or(0)
+    println("  \{change.item_id} · \{before} → \{after} 分")
+  }
+  for id in report.newly_unmapped {
+    println("新增未关联项 · \{id}")
+  }
+  for id in report.no_longer_unmapped {
+    println("移出未关联清单 · \{id}")
+  }
 }
 
 ///|

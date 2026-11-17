@@ -1,10 +1,22 @@
 # Proofbell
 
-课程上线前，拿课程目标对照一遍练习和考核。Proofbell 根据教师填写的目标、题目、评分细则和教学阶段，找出低层次考核、来得太晚的练习和未归属分值。每条判断都能追到题目和评分细则。
+Proofbell 帮助教师在开课前核对课程目标、练习与考核。安装 [MoonBit](https://www.moonbitlang.com/download/) 和 [Node.js](https://nodejs.org/) 22.3 或更新版本，在仓库根目录运行以下示例。
+
+## 检查题目能否提供目标所需的证据
+
+一份考核可以同时满足任务等级、分值与时序要求，却没有要求学员交出足以支撑目标的产物。Proofbell 的教学证据检查将评分细则中的可观察要求表示为事实，通过课程团队编写的规则推导它们支持的能力。报告可追到具体题目、评分条目、推导规则和缺失前提。对于要求迁移的目标，还要找到一项更早、情境不同且具备完整证据的练习，并在新情境中安排独立考核。
+
+```sh
+moon run brief -- semantics curricula/semantic/blueprint.json curricula/semantic/independent.json
+moon run brief -- semantics curricula/semantic/blueprint.json curricula/semantic/missing-evidence.json
+moon run brief -- semantics curricula/semantic/blueprint.json curricula/semantic/reused-material.json
+```
+
+三次使用同一份课程蓝图，原来的等级、分值和时序检查均通过。完整核验任务通过教学证据检查，删去「比较原文与主张」后返回 1，并指出缺失的评分要求。复用练习材料也返回 1，因为样例要求在不同情境展示同一能力。规则文件与库接口见 [教学证据规则](semantics/README.md)。
 
 ## 先校一次 AI 素养课
 
-安装 [MoonBit](https://www.moonbitlang.com/download/) 和 [Node.js](https://nodejs.org/) 22.3 或更新版本。项目使用 moonc `0.10.20+65efd5b93` 验证。克隆仓库后可直接运行样例：
+项目使用 moonc `0.10.20+65efd5b93` 验证。克隆仓库后可运行基础审计：
 
 ```sh
 git clone https://github.com/Zy789kl/proofbell.git

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "course": "source-review",
+  "title": "原文核验",
+  "objectives": [
+    {
+      "id": "verify",
+      "title": "独立判断新材料的引文是否成立",
+      "level": 3,
+      "minimum_points": 10,
+      "require_rehearsal": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "practice",
+      "title": "引导核验",
+      "phase": 1,
+      "kind": "practice",
+      "points": 0,
+      "links": [
+        {
+          "objective": "verify",
+          "level": 3,
+          "points": 0,
+          "criterion": "记录练习核验过程"
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "提交核验报告",
+      "phase": 2,
+      "kind": "assessment",
+      "points": 10,
+      "links": [
+        {
+          "objective": "verify",
+          "level": 3,
+          "points": 10,
+          "criterion": "提交可复查的核验说明"
+        }
+      ]
+    }
+  ]
+}

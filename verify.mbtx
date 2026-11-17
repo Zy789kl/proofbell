@@ -64,7 +64,81 @@ async fn main {
     imported
     is { "course": "lab", "objectives": [{ "minimum_points": 5, .. }], .. },
   )
+  verify_semantics(workshop, training)
   println(
     "Verified four audits, comparison, gate, repair list, portfolio, HTML and TSV.",
+  )
+}
+
+///|
+async fn verify_semantics(workshop : String, training : String) -> Unit {
+  let base = "curricula/semantic/"
+  let blueprint = base + "blueprint.json"
+  let supported = @json.parse(
+    invoke(["semantics", blueprint, base + "independent.json"], 0),
+  )
+  assert_true(
+    supported
+    is {
+      "ready": true,
+      "findings": [
+        {
+          "witness": "assessment",
+          "candidates": [{ "transfer_from": "practice", .. }],
+          ..
+        },
+      ],
+      ..
+    },
+  )
+  let missing = @json.parse(
+    invoke(["semantics", blueprint, base + "missing-evidence.json"], 1),
+  )
+  assert_true(
+    missing
+    is {
+      "blueprint_ready": true,
+      "ready": false,
+      "findings": [
+        {
+          "candidates": [{ "missing_observations": ["claim-comparison"], .. }],
+          ..
+        },
+      ],
+      ..
+    },
+  )
+  let reused = @json.parse(
+    invoke(["semantics", blueprint, base + "reused-material.json"], 1),
+  )
+  assert_true(
+    reused
+    is {
+      "blueprint_ready": true,
+      "findings": [
+        { "candidates": [{ "status": "transfer_not_demonstrated", .. }], .. },
+      ],
+      ..
+    },
+  )
+  let accessible = @json.parse(
+    invoke(["semantics", workshop, base + "teacher-profile.json"], 0),
+  )
+  assert_true(accessible is { "ready": true, .. })
+  let safety = @json.parse(
+    invoke(["semantics", training, base + "training-profile.json"], 1),
+  )
+  assert_true(
+    safety
+    is {
+      "ready": false,
+      "findings": [
+        { "candidates": [{ "status": "transfer_not_demonstrated", .. }], .. },
+      ],
+      ..
+    },
+  )
+  println(
+    "Verified teaching evidence and transfer across three course scenarios.",
   )
 }

@@ -156,6 +156,14 @@ fn run(args : FixedArray[String]) -> Int32 raise {
   let ready = match args[:] {
     ["audit", path] => audit(path, false)
     ["audit", path, "--json"] => audit(path, true)
+    ["semantics", blueprint, profile] => {
+      let report = @semantics.analyze(
+        @alignment.audit(read_blueprint(blueprint)),
+        read_blueprint(profile),
+      )
+      println(report.to_json().stringify(indent=2))
+      report.ready
+    }
     ["review-sheet", path] => review_sheet(path, None)
     ["review-sheet", path, "--output", output] =>
       review_sheet(path, Some(output))
@@ -179,7 +187,7 @@ fn run(args : FixedArray[String]) -> Int32 raise {
     ] => import_table(course, title, objectives, evidence, links, Some(output))
     _ =>
       raise UsageError(
-        "用法：moon run brief -- audit <课程.json> [--json]\n      moon run brief -- compare <旧版.json> <新版.json> [--json]\n      moon run brief -- gate <旧版.json> <新版.json>\n      moon run brief -- portfolio <课程.json> ...\n      moon run brief -- review-sheet <课程.json> [--output 审阅单.html]\n      moon run brief -- repairs <课程.json> [--json]\n      moon run brief -- import-table <课程编号> <标题> <目标.tsv> <活动.tsv> <关联.tsv> [--output 蓝图.json]",
+        "用法：moon run brief -- audit <课程.json> [--json]\n      moon run brief -- semantics <课程.json> <规则.json>\n      moon run brief -- compare <旧版.json> <新版.json> [--json]\n      moon run brief -- gate <旧版.json> <新版.json>\n      moon run brief -- portfolio <课程.json> ...\n      moon run brief -- review-sheet <课程.json> [--output 审阅单.html]\n      moon run brief -- repairs <课程.json> [--json]\n      moon run brief -- import-table <课程编号> <标题> <目标.tsv> <活动.tsv> <关联.tsv> [--output 蓝图.json]",
       )
   }
   if ready {
@@ -197,6 +205,10 @@ fn main {
       2
     }
     @alignment.InvalidBlueprint(message) => {
+      stderr(message)
+      2
+    }
+    @semantics.InvalidProfile(message) => {
       stderr(message)
       2
     }

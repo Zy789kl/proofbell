@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "course": "equipment-isolation",
+  "observations": [
+    "check-state",
+    "record-result"
+  ],
+  "rules": [
+    {
+      "id": "combine-rubric",
+      "needs": [
+        "check-state",
+        "record-result"
+      ],
+      "yields": "documented-check"
+    }
+  ],
+  "claims": [
+    {
+      "objective": "verify-isolation",
+      "needs": [
+        "documented-check"
+      ],
+      "transfer": true
+    }
+  ],
+  "tasks": [
+    {
+      "item": "label-exercise",
+      "context": "demonstration",
+      "independent": false,
+      "observations": []
+    },
+    {
+      "item": "simulated-check",
+      "context": "new-example",
+      "independent": true,
+      "observations": [
+        {
+          "fact": "check-state",
+          "rubric": "按模拟清单核对状态"
+        },
+        {
+          "fact": "record-result",
+          "rubric": "记录确认结果供教员复核"
+        }
+      ]
+    }
+  ]
+}

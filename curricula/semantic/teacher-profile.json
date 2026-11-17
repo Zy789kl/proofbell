@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "course": "accessible-lessons",
+  "observations": [
+    "describe-data",
+    "answer-reader-task"
+  ],
+  "rules": [
+    {
+      "id": "combine-rubric",
+      "needs": [
+        "describe-data",
+        "answer-reader-task"
+      ],
+      "yields": "usable-description"
+    }
+  ],
+  "claims": [
+    {
+      "objective": "describe-chart",
+      "needs": [
+        "usable-description"
+      ],
+      "transfer": true
+    }
+  ],
+  "tasks": [
+    {
+      "item": "guided-rewrite",
+      "context": "demonstration",
+      "independent": false,
+      "observations": [
+        {
+          "fact": "describe-data",
+          "rubric": "说明样例图表的变量与趋势"
+        },
+        {
+          "fact": "answer-reader-task",
+          "rubric": "按示范文本回答样例图表的问题"
+        }
+      ]
+    },
+    {
+      "item": "alt-text-review",
+      "context": "new-example",
+      "independent": true,
+      "observations": [
+        {
+          "fact": "describe-data",
+          "rubric": "用替代文本描述变量和趋势"
+        },
+        {
+          "fact": "answer-reader-task",
+          "rubric": "用文本回答趋势和最高点问题"
+        }
+      ]
+    }
+  ]
+}

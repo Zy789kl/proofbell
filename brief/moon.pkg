@@ -1,5 +1,6 @@
 import {
   "Zy789kl/proofbell/alignment",
+  "Zy789kl/proofbell/semantics",
   "Zy789kl/proofbell/tables",
 }
 

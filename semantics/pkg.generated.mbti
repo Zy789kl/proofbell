@@ -1,0 +1,68 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Zy789kl/proofbell/semantics"
+
+import {
+  "Zy789kl/proofbell/alignment",
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn analyze(@alignment.Report, String) -> SemanticReport raise SemanticError
+
+// Errors
+pub suberror SemanticError {
+  InvalidProfile(String)
+}
+
+// Types and methods
+#derive(@json.ToJson)
+pub struct BlockedRule {
+  rule : String
+  conclusion : String
+  missing : Array[String]
+}
+pub fn BlockedRule::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct Candidate {
+  item : String
+  context : String?
+  missing : Array[String]
+  derivations : Array[Derivation]
+  blocked_rules : Array[BlockedRule]
+  missing_observations : Array[String]
+  independent : Bool
+  transfer_from : String?
+  status : String
+}
+pub fn Candidate::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct ClaimFinding {
+  objective : String
+  witness : String?
+  candidates : Array[Candidate]
+}
+pub fn ClaimFinding::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct Derivation {
+  fact : String
+  rubric : String?
+  rule : String?
+  premises : Array[String]
+}
+pub fn Derivation::to_json(Self) -> @json.Json
+
+#derive(@json.ToJson)
+pub struct SemanticReport {
+  course : String
+  blueprint_ready : Bool
+  ready : Bool
+  findings : Array[ClaimFinding]
+}
+pub fn SemanticReport::to_json(Self) -> @json.Json
+
+// Type aliases
+
+// Traits

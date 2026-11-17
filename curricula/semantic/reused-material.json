@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "course": "source-review",
+  "observations": [
+    "source-locator",
+    "source-excerpt",
+    "claim-comparison"
+  ],
+  "rules": [
+    {
+      "id": "justify-claim",
+      "needs": [
+        "inspectable-source",
+        "claim-comparison"
+      ],
+      "yields": "verified-claim"
+    },
+    {
+      "id": "make-source-inspectable",
+      "needs": [
+        "source-locator",
+        "source-excerpt"
+      ],
+      "yields": "inspectable-source"
+    }
+  ],
+  "claims": [
+    {
+      "objective": "verify",
+      "needs": [
+        "verified-claim"
+      ],
+      "transfer": true
+    }
+  ],
+  "tasks": [
+    {
+      "item": "practice",
+      "context": "worked-paper",
+      "independent": false,
+      "observations": [
+        {
+          "fact": "source-locator",
+          "rubric": "记录练习论文的出处与段落位置"
+        },
+        {
+          "fact": "source-excerpt",
+          "rubric": "摘出原文相关句并说明上下文"
+        },
+        {
+          "fact": "claim-comparison",
+          "rubric": "按提示逐项核对原文与引用说法"
+        }
+      ]
+    },
+    {
+      "item": "assessment",
+      "context": "worked-paper",
+      "independent": true,
+      "observations": [
+        {
+          "fact": "source-locator",
+          "rubric": "提交新论文的 DOI 和精确段落"
+        },
+        {
+          "fact": "source-excerpt",
+          "rubric": "摘录能够复查的原文内容"
+        },
+        {
+          "fact": "claim-comparison",
+          "rubric": "自行指出原文是否支持被核验的说法"
+        }
+      ]
+    }
+  ]
+}

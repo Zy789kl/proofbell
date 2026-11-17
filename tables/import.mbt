@@ -56,7 +56,13 @@ fn integer(
   row : Int32,
   field : String,
 ) -> Int32 raise TableError {
-  @string.parse_int(cell, base=10) catch {
+  // Keep TSV fields decimal when the standard parser infers the radix.
+  for ch in cell {
+    if !((ch >= '0' && ch <= '9') || ch == '_' || ch == '+' || ch == '-') {
+      raise bad(table, row, "expected an integer in \{field}")
+    }
+  }
+  @string.parse_int(cell) catch {
     _ => raise bad(table, row, "expected an integer in \{field}")
   }
 }
